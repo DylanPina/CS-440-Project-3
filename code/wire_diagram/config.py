@@ -8,7 +8,6 @@ class Wire(Enum):
     BLUE = 2
     YELLOW = 3
     GREEN = 4
-    BLANK = 0
 
 
 def print_wire_diagram(wire_diagram: List[List[Optional[Wire]]]) -> None:
