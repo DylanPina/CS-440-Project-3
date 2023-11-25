@@ -34,13 +34,12 @@ class WireDiagram:
                 row = random.choice(remaining_rows)
                 remaining_rows.remove(row)
                 self.place_row(row, wire)
-                placement.append((row, direction))
             else:
                 col = random.choice(remaining_cols)
                 remaining_cols.remove(col)
                 self.place_col(col, wire)
-                placement.append((col, direction))
 
+            placement.append((wire.value, direction))
             direction = 1 - direction
 
         return placement
@@ -65,11 +64,11 @@ class WireDiagram:
         """Returns True if the diagram is classified as dangerous"""
 
         red_wire_index = next((i for i, (color, _) in enumerate(
-            self.wire_placement) if color == Wire.RED), -1)
+            self.wire_placement) if color == Wire.RED.value), -1)
         yellow_wire_index = next((i for i, (color, _) in enumerate(
-            self.wire_placement) if color == Wire.YELLOW), -1)
+            self.wire_placement) if color == Wire.YELLOW.value), -1)
 
         red_wire_direction = self.wire_placement[red_wire_index][1]
         yellow_wire_direction = self.wire_placement[yellow_wire_index][1]
 
-        return (red_wire_index < yellow_wire_direction) and (red_wire_direction != yellow_wire_direction)
+        return (red_wire_index < yellow_wire_index) and (red_wire_direction != yellow_wire_direction)
