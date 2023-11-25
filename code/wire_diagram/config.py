@@ -18,7 +18,8 @@ def print_wire_diagram(wire_diagram: List[List[Optional[Wire]]]) -> None:
     output = "\n--Wire Diagram--\n"
     for row in range(len(wire_diagram)):
         for col in range(len(wire_diagram)):
-            output += f"{wire_diagram[row][col].value}, "
+            curr = wire_diagram[row][col]
+            output += f"{curr.value if curr else 0}, "
 
         output = output.rsplit(", ", 1)[0]
         if row != len(wire_diagram) - 1:
