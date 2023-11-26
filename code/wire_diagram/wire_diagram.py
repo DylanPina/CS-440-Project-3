@@ -1,19 +1,15 @@
 import logging
 import random
-from typing import List, Optional, Tuple
-from .config import Wire, print_wire_diagram
+from typing import List, Tuple
+from .config import Wire
+from .utils import init_diagram, classify_diagram, place_row, place_col
 
 
 class WireDiagram:
     def __init__(self):
-        self.diagram = self.init_diagram()
-        self.wire_placement = self.place_wires()
-        self.is_dangerous = self.classify_diagram()
-
-    def init_diagram(self) -> List[List[Optional[Wire]]]:
-        """Initializes the wire diagram to an empty 20x20 matrix"""
-
-        return [[None] * 20 for _ in range(20)]
+        self.diagram = init_diagram()
+        self.wire_placement = self.place_wires()  # (Wire, row/col, direction)
+        self.is_dangerous = classify_diagram(self.wire_placement)
 
     def place_wires(self) -> List[Tuple[Wire, int]]:
         """
@@ -23,7 +19,7 @@ class WireDiagram:
         direction = 1 if random.random() > 0.5 else 0
         remaining_wires = [wire for wire in Wire]
         remaining_cols, remaining_rows = list(range(20)), list(range(20))
-        placement: List[Tuple] = []  # (Wire, direction)
+        placement: List[Tuple] = []  # (Wire, row/col, direction)
 
         while remaining_wires:
             wire = random.choice(remaining_wires)
@@ -32,42 +28,14 @@ class WireDiagram:
             if direction:
                 row = random.choice(remaining_rows)
                 remaining_rows.remove(row)
-                self.place_row(row, wire)
-                logging.debug(f"Row: {row}, Wire: {wire.value}")
-                placement.append((wire, direction))
+                place_row(self.diagram, row, wire)
+                placement.append((wire, row, direction))
             else:
                 col = random.choice(remaining_cols)
                 remaining_cols.remove(col)
-                self.place_col(col, wire)
-                logging.debug(f"Col: {col}, Wire: {wire.value}")
-                placement.append((wire, direction))
+                place_col(self.diagram, col, wire)
+                placement.append((wire, col, direction))
 
             direction = 1 - direction
-            print_wire_diagram(self.diagram)
 
         return placement
-
-    def place_row(self, row: int, wire: Wire) -> None:
-        """Places wire on a specified row"""
-
-        # Set every element in the specified row to the given value
-        self.diagram[row] = [wire] * 20
-
-    def place_col(self, col: int, wire: Wire) -> None:
-        """Places wire on a specified row"""
-
-        for row in self.diagram:
-            row[col] = wire
-
-    def classify_diagram(self) -> bool:
-        """Returns True if the diagram is classified as dangerous"""
-        print(self.wire_placement)
-        red_wire_index = next((i for i, (color, _) in enumerate(
-            self.wire_placement) if color == Wire.RED), -1)
-        yellow_wire_index = next((i for i, (color, _) in enumerate(
-            self.wire_placement) if color == Wire.YELLOW), -1)
-
-        red_wire_direction = self.wire_placement[red_wire_index][1]
-        yellow_wire_direction = self.wire_placement[yellow_wire_index][1]
-
-        return (red_wire_index < yellow_wire_index) and (red_wire_direction != yellow_wire_direction)

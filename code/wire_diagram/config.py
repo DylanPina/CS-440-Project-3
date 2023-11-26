@@ -1,6 +1,4 @@
-import logging
 from enum import Enum
-from typing import List, Optional
 
 
 class Wire(Enum):
@@ -9,21 +7,5 @@ class Wire(Enum):
     YELLOW = 3
     GREEN = 4
 
-
-def print_wire_diagram(wire_diagram: List[List[Optional[Wire]]]) -> None:
-    """Outputs the wire diagram data to the log"""
-
-    if not logging.DEBUG >= logging.root.level:
-        return
-
-    output = "\n--Wire Diagram--\n"
-    for row in range(len(wire_diagram)):
-        for col in range(len(wire_diagram)):
-            curr = wire_diagram[row][col]
-            output += f"{curr.value if curr else 0}, "
-
-        output = output.rsplit(", ", 1)[0]
-        if row != len(wire_diagram) - 1:
-            output += "\n"
-
-    logging.debug(output)
+    def __str__(self):
+        return "%s" % self.value
