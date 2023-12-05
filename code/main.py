@@ -1,6 +1,6 @@
 import logging
 from config import init_logging
-from wire_diagram import WireDiagram, Wire, Seed, print_wire_diagram
+from wire_diagram import WireDiagram, Wire, Seed, print_wire_diagram, WireDiagramDataLoader
 
 if __name__ == '__main__':
     init_logging()
@@ -13,3 +13,5 @@ if __name__ == '__main__':
     logging.debug(f"Wire placement: {wire_diagram.wire_placement}")
     logging.debug(
         f"Wire diagram dangerous (Red over Yellow): {wire_diagram.is_dangerous}")
+
+    print(WireDiagramDataLoader(1, 0, 0).load_data())

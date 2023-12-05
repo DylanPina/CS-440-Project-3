@@ -1,3 +1,4 @@
+import numpy as np
 import logging
 from typing import List, Optional
 from .config import Wire
@@ -24,7 +25,7 @@ def print_wire_diagram(wire_diagram: List[List[Optional[Wire]]], msg: str = None
         output = output.rsplit(", ", 1)[0]
         if row != len(wire_diagram) - 1:
             output += "\n"
-    
+
     logging.debug(output)
 
 
@@ -42,8 +43,8 @@ def place_col(diagram: List[List[Optional[Wire]]], col: int, wire: Wire) -> None
         row[col] = wire
 
 
-def classify_diagram(wire_placement: List[Wire]) -> bool:
-    """Returns True if the diagram is classified as dangerous"""
+def classify_diagram(wire_placement: List[Wire]) -> np.ndarray:
+    """Returns one-hot encoding for diagram's wire placement"""
 
     red_wire_index = next((i for i, (wire, _, _) in enumerate(
         wire_placement) if wire == Wire.RED), -1)
@@ -53,4 +54,19 @@ def classify_diagram(wire_placement: List[Wire]) -> bool:
     red_wire_direction = wire_placement[red_wire_index][2]
     yellow_wire_direction = wire_placement[yellow_wire_index][2]
 
-    return (red_wire_index < yellow_wire_index) and (red_wire_direction != yellow_wire_direction)
+    is_dangerous = (red_wire_index < yellow_wire_index) and (
+        red_wire_direction != yellow_wire_direction)
+
+    return one_hot_encode(is_dangerous)
+
+
+def one_hot_encode(is_dangerous: bool) -> np.ndarray:
+    """Returns one-hot encoding for whether a diagram is classifed as dangerous or not dangerous"""
+
+    # Define the one-hot encoding for 'dangerous' and 'not dangerous'
+    encoding_dangerous = np.array([1, 0])    # One-hot encoding for 'dangerous'
+    # One-hot encoding for 'not dangerous'
+    encoding_not_dangerous = np.array([0, 1])
+
+    # Return the appropriate encoding based on the input
+    return encoding_dangerous if is_dangerous else encoding_not_dangerous
