@@ -1,3 +1,4 @@
+import numpy as np
 import logging
 import random
 from typing import List, Tuple
@@ -40,3 +41,8 @@ class WireDiagram:
             direction = 1 - direction
 
         return placement
+
+    def flatten_diagram(self) -> np.ndarray:
+        """Flattens the wires into binary values"""
+
+        return np.array([cell.value for row in self.diagram for cell in row]).flatten()

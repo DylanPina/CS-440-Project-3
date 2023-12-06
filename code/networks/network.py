@@ -49,17 +49,41 @@ class Network():
                 # Perform backpropagation to compute the gradients of weights (grad_w) and biases (grad_b)
                 grad_w, grad_b = self.backpropagation(
                     input_data, expected_output)
+                print(grad_w, grad_b)
                 # Update the weights of the network by subtracting the gradient scaled by the learning rate
                 self.weights = [w - learning_rate *
                                 gw for w, gw in zip(self.weights, grad_w)]
                 # Update the biases in a similar way, adjusting them based on their gradients and the learning rate
                 self.biases = [b - learning_rate *
-                                gb for b, gb in zip(self.biases, grad_b)]
+                               gb for b, gb in zip(self.biases, grad_b)]
 
     def backpropagation(self, input_data: np.ndarray, expected_output: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
-        
-        
-        pass
+        nabla_b = [np.zeros(b.shape) for b in self.biases]
+        nabla_w = [np.zeros(w.shape) for w in self.weights]
+        # feedforward
+        activation = input_data
+        # list to store all the activations, layer by layer
+        activations = [input_data]
+        zs = []  # list to store all the z vectors, layer by layer
+        for b, w in zip(self.biases, self.weights):
+            print(w.shape, activation.shape)
+            z = np.dot(w, activation)+b
+            activation = self.sigmoid(z)
+            activations.append(activation)
+        # backward pass
+        delta = self.cost_derivative(activations[-1], expected_output) * \
+            self.sigmoid_prime(zs[-1])
+        nabla_b[-1] = delta
+        nabla_w[-1] = np.dot(delta, activations[-2].transpose())
+
+        for l in range(2, self.layers_count):
+            z = zs[-l]
+            sp = self.sigmoid_prime(z)
+            delta = np.dot(self.weights[-l+1].transpose(), delta) * sp
+            nabla_b[-l] = delta
+            nabla_w[-l] = np.dot(delta, activations[-l-1].transpose())
+
+        return (nabla_b, nabla_w)
 
     def cost_derivative(self, output_activations, y):
         """Compute the gradient of the cost function with respect to the output layer activations."""

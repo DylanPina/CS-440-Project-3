@@ -1,3 +1,4 @@
+import numpy as np
 import logging
 from config import init_logging
 from wire_diagram import WireDiagram, WireDiagramCell, Seed, print_wire_diagram, WireDiagramDataLoader
@@ -17,7 +18,8 @@ if __name__ == '__main__':
 
     training_data, validation_data, test_data = WireDiagramDataLoader(
         1, 1, 1).load_data()
-    print(training_data)
-    print(validation_data)
-    print(test_data)
-    network = Network([600, 10, 2])
+    # print(validation_data)
+    # print(test_data)
+
+    # network = Network([400, 10, 2])
+    # network.stochastic_gradient_descent(training_data, 0.01, 1)
