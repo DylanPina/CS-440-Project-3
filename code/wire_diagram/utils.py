@@ -1,16 +1,16 @@
 import numpy as np
 import logging
 from typing import List, Optional
-from .config import Wire
+from .config import WireDiagramCell
 
 
-def init_diagram() -> List[List[Optional[Wire]]]:
+def init_diagram() -> List[List[Optional[WireDiagramCell]]]:
     """Initializes the wire diagram to an empty 20x20 matrix"""
 
-    return [[None] * 20 for _ in range(20)]
+    return [[WireDiagramCell.NO_WIRE] * 20 for _ in range(20)]
 
 
-def print_wire_diagram(wire_diagram: List[List[Optional[Wire]]], msg: str = None) -> None:
+def print_wire_diagram(wire_diagram: List[List[Optional[WireDiagramCell]]], msg: str = None) -> None:
     """Outputs the wire diagram data to the log"""
 
     if not logging.DEBUG >= logging.root.level:
@@ -29,27 +29,27 @@ def print_wire_diagram(wire_diagram: List[List[Optional[Wire]]], msg: str = None
     logging.debug(output)
 
 
-def place_row(diagram: List[List[Optional[Wire]]], row: int, wire: Wire) -> None:
+def place_row(diagram: List[List[Optional[WireDiagramCell]]], row: int, wire: WireDiagramCell) -> None:
     """Places wire on a specified row"""
 
     # Set every element in the specified row to the given value
     diagram[row] = [wire] * 20
 
 
-def place_col(diagram: List[List[Optional[Wire]]], col: int, wire: Wire) -> None:
+def place_col(diagram: List[List[Optional[WireDiagramCell]]], col: int, wire: WireDiagramCell) -> None:
     """Places wire on a specified row"""
 
     for row in diagram:
         row[col] = wire
 
 
-def classify_diagram(wire_placement: List[Wire]) -> np.ndarray:
+def classify_diagram(wire_placement: List[WireDiagramCell]) -> np.ndarray:
     """Returns one-hot encoding for diagram's wire placement"""
 
     red_wire_index = next((i for i, (wire, _, _) in enumerate(
-        wire_placement) if wire == Wire.RED), -1)
+        wire_placement) if wire == WireDiagramCell.RED), -1)
     yellow_wire_index = next((i for i, (wire, _, _) in enumerate(
-        wire_placement) if wire == Wire.YELLOW), -1)
+        wire_placement) if wire == WireDiagramCell.YELLOW), -1)
 
     red_wire_direction = wire_placement[red_wire_index][2]
     yellow_wire_direction = wire_placement[yellow_wire_index][2]

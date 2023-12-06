@@ -1,7 +1,7 @@
 import logging
 import random
 from typing import List, Tuple
-from .config import Wire
+from .config import WireDiagramCell
 from .utils import init_diagram, classify_diagram, place_row, place_col
 
 
@@ -11,13 +11,14 @@ class WireDiagram:
         self.wire_placement = self.place_wires()  # (Wire, row/col, direction)
         self.is_dangerous = classify_diagram(self.wire_placement)
 
-    def place_wires(self) -> List[Tuple[Wire, int]]:
+    def place_wires(self) -> List[Tuple[WireDiagramCell, int]]:
         """
         Places the wires on the diagram and returns the order in which the wires were placed
         """
 
         direction = 1 if random.random() > 0.5 else 0
-        remaining_wires = [wire for wire in Wire]
+        remaining_wires = [WireDiagramCell.RED, WireDiagramCell.BLUE,
+                           WireDiagramCell.GREEN, WireDiagramCell.YELLOW]
         remaining_cols, remaining_rows = list(range(20)), list(range(20))
         placement: List[Tuple] = []  # (Wire, row/col, direction)
 
