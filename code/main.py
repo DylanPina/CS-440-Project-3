@@ -17,9 +17,9 @@ if __name__ == '__main__':
     #     f"Wire diagram dangerous (Red over Yellow): {wire_diagram.is_dangerous}")
 
     training_data, validation_data, test_data = WireDiagramDataLoader(
-        1, 1, 1).load_data()
+        100, 100, 100).load_data()
     # print(validation_data)
     # print(test_data)
 
-    # network = Network([400, 10, 2])
-    # network.stochastic_gradient_descent(training_data, 0.01, 1)
+    network = Network([1600, 10, 2])
+    network.stochastic_gradient_descent(training_data, 0.01, 100, test_data)
