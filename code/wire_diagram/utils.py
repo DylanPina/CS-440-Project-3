@@ -64,7 +64,8 @@ def one_hot_encode(is_dangerous: bool) -> np.ndarray:
     """Returns one-hot encoding for whether a diagram is classifed as dangerous or not dangerous"""
 
     # Define the one-hot encoding for 'dangerous' and 'not dangerous'
-    encoding_dangerous = np.array([[1], [0]])    # One-hot encoding for 'dangerous'
+    # One-hot encoding for 'dangerous'
+    encoding_dangerous = np.array([[1], [0]])
     # One-hot encoding for 'not dangerous'
     encoding_not_dangerous = np.array([[0], [1]])
 
