@@ -83,18 +83,18 @@ class LogisticRegression():
         self.training_loss.append(training_loss)
         self.testing_loss.append(testing_loss)
 
-    def plot_loss(self) -> None:
+    def plot_loss(self, linear: bool) -> None:
         """Plots the loss of the training and testing data sets"""
 
-        utils.plot(f"training_loss_d-{len(self.training_data)}_e-{self.epochs}_a-{self.learning_rate}", f"Training Data Loss - Data size: {len(self.training_data)} - Epochs: {self.epochs} - Alpha: {self.learning_rate}",
+        utils.plot(f"training_loss_{f'linear' if linear else 'non-linear'}_d-{len(self.training_data)}_e-{self.epochs}_a-{self.learning_rate}", f"Training Data Loss {f'Linear' if linear else 'Non-linear'} - Data size: {len(self.training_data)} - Epochs: {self.epochs} - Alpha: {self.learning_rate}",
                    "Epochs", "Loss", self.training_loss)
-        utils.plot(f"testing_loss_d-{len(self.testing_data)}_e-{self.epochs}_a-{self.learning_rate}", f"Testing Data Loss - Data size: {len(self.testing_data)} - Epochs: {self.epochs} - Alpha: {self.learning_rate}",
+        utils.plot(f"testing_loss_{f'linear' if linear else 'non-linear'}_d-{len(self.testing_data)}_e-{self.epochs}_a-{self.learning_rate}", f"Testing Data Loss {f'Linear' if linear else 'Non-linear'} - Data size: {len(self.testing_data)} - Epochs: {self.epochs} - Alpha: {self.learning_rate}",
                    "Epochs", "Loss", self.testing_loss)
 
-    def plot_success(self) -> None:
+    def plot_success(self, linear: bool) -> None:
         """Plots the success rate of the training and testing data sets"""
 
-        utils.plot(f"training_success_d-{len(self.training_data)}_e-{self.epochs}_a-{self.learning_rate}", f"Training Success - Data size: {len(self.training_data)} - Epochs: {self.epochs} - Alpha: {self.learning_rate}", "Epochs", "Success Rate",
+        utils.plot(f"training_success_{f'linear' if linear else 'non-linear'}_d-{len(self.training_data)}_e-{self.epochs}_a-{self.learning_rate}", f"Training Success {f'Linear' if linear else 'Non-linear'} - Data size: {len(self.training_data)} - Epochs: {self.epochs} - Alpha: {self.learning_rate}", "Epochs", "Success Rate",
                    self.training_success)
-        utils.plot(f"testing_success_d-{len(self.testing_data)}_e-{self.epochs}_a-{self.learning_rate}", f"Testing Success - Data size: {len(self.testing_data)} - Epochs: {self.epochs} - Alpha: {self.learning_rate}",
+        utils.plot(f"testing_success_{f'linear' if linear else 'non-linear'}_d-{len(self.testing_data)}_e-{self.epochs}_a-{self.learning_rate}", f"Testing Success {f'Linear' if linear else 'Non-linear'} - Data size: {len(self.testing_data)} - Epochs: {self.epochs} - Alpha: {self.learning_rate}",
                    "Epochs", "Success Rate", self.testing_success)
