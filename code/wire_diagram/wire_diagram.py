@@ -48,28 +48,41 @@ class WireDiagram:
         return np.array([cell.value for row in self.diagram for cell in row]).flatten()
 
     def generate_non_linear_features(self, diagram: np.ndarray) -> np.ndarray:
-        """Generates non-linear features based on horizontal and vertical"""
+        """
+        Generates non-linear features based on horizontal and vertical adjacent cells.
+
+        In each row of 20 cells, there are 19 interactions (between the first and second
+        cell, second and third, and so onup to the 19th and 20th). Since there are 20 rows,
+        the total number of horizontal interactions is 19 * 20 = 380.
+
+        Similarly, in each column of 20 cells, there are also 19 interactions (between the
+        first and second cell, second and third, etc., down the column). With 20 columns,
+        the total number of vertical interactions is also 19 * 20 = 380.
+
+        Adding horizontal and vertical interactions produce a total of 760 new features.
+        """
 
         features = []
-        num_rows = num_columns = 20  # 20x20 grid
+        num_rows = num_columns = 20  # 20 x 20 grid
 
-        # Horizontal Interactions
+        # Horizontal Interactions (Adjacent cells in a row)
         for row in range(num_rows):
+            # Loop to second-to-last cell to avoid index out of bounds
             for i in range(num_rows - 1):
                 index1 = row * num_rows + i
-                for j in range(i + 1, num_rows):
-                    index2 = row * num_rows + j
-                    interaction = diagram[index1] * diagram[index2]
-                    features.append(interaction)
+                index2 = index1 + 1  # Adjacent cell
+                interaction = diagram[index1] * diagram[index2]
+                features.append(interaction)
 
-        # Vertical Interactions
+        # Vertical Interactions (Adjacent cells in a column)
         for col in range(num_columns):
+            # Loop to second-to-last cell to avoid index out of bounds
             for i in range(num_rows - 1):
                 index1 = col + i * num_columns
-                for j in range(i + 1, num_rows):
-                    index2 = col + j * num_columns
-                    interaction = diagram[index1] * diagram[index2]
-                    features.append(interaction)
+                # Cell in the next row (directly below)
+                index2 = index1 + num_columns
+                interaction = diagram[index1] * diagram[index2]
+                features.append(interaction)
 
         return np.array(features)
 
