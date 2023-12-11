@@ -57,7 +57,11 @@ def classify_diagram(wire_placement: List[WireDiagramCell]) -> np.ndarray:
     is_dangerous = (red_wire_index < yellow_wire_index) and (
         red_wire_direction != yellow_wire_direction)
 
-    return one_hot_encode(is_dangerous)
+    return 1 if is_dangerous else 0
+
+
+def evaluate_activation(activation: float) -> int:
+    return 1 if activation >= 0.5 else 0
 
 
 def one_hot_encode(is_dangerous: bool) -> np.ndarray:
