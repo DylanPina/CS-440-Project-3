@@ -7,11 +7,20 @@ from typing import List, Tuple
 
 class LogisticRegression():
 
-    def __init__(self, input_layer_size: int, training_data: Tuple[np.ndarray, np.ndarray], testing_data: Tuple[np.ndarray, np.ndarray], learning_rate: float, epochs: int):
+    def __init__(
+        self,
+        input_layer_size: int,
+        training_data: Tuple[np.ndarray, np.ndarray],
+        testing_data: Tuple[np.ndarray, np.ndarray],
+        learning_rate: float,
+        epochs: int,
+        lambda_term: float
+    ):
         self.input_layer_size = input_layer_size
         self.training_data = training_data
         self.learning_rate = learning_rate
         self.epochs = epochs
+        self.lambda_term = lambda_term
         self.testing_data = testing_data
         self.weights = [np.random.randn() for _ in range(input_layer_size)]
         self.training_loss = []
@@ -36,11 +45,19 @@ class LogisticRegression():
             # Iterate over each example in the training data
             for input_data, expected_output in self.training_data:
                 activation = self.feedforward(input_data)
-                grad_w = np.dot((activation - expected_output),
-                                input_data.reshape(-1, 1).transpose())
+                grad_w = self.gradient_descent(
+                    activation, input_data, expected_output)
                 self.weights -= (self.learning_rate * grad_w)
 
             self.calculate_loss()
+
+    def gradient_descent(self, activation: float, input_data: np.ndarray, expected_output: int) -> np.ndarray:
+        """Compute the gradient of the loss function."""
+
+        gradient = np.dot((activation - expected_output),
+                          input_data.reshape(-1, 1).transpose())
+    
+        return gradient
 
     def binary_cross_entropy_loss(self, data: List[Tuple[np.ndarray]]) -> float:
         """Calculate the binary cross entropy loss."""

@@ -10,6 +10,7 @@ VALIDATION_DATA_SIZE = 0
 TESTING_DATA_SIZE = 1000
 LEARNING_RATE = 0.01
 EPOCHS = 100
+LAMBDA_TERM = 0.01
 
 if __name__ == '__main__':
     init_logging()
@@ -22,7 +23,8 @@ if __name__ == '__main__':
         training_data=training_data,
         testing_data=testing_data,
         learning_rate=LEARNING_RATE,
-        epochs=EPOCHS)
+        epochs=EPOCHS,
+        lambda_term=LAMBDA_TERM)
 
     t1_linear.stochastic_gradient_descent()
     t1_linear.plot_loss(linear=True)
@@ -36,7 +38,8 @@ if __name__ == '__main__':
         training_data=training_data,
         testing_data=testing_data,
         learning_rate=LEARNING_RATE,
-        epochs=EPOCHS)
+        epochs=EPOCHS,
+        lambda_term=LAMBDA_TERM)
 
     t1_non_linear.stochastic_gradient_descent()
     t1_non_linear.plot_loss(linear=False)
