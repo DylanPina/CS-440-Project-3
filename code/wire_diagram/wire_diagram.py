@@ -9,12 +9,11 @@ from .utils import init_diagram, classify_diagram, place_row, place_col
 class WireDiagram:
     def __init__(self):
         self.diagram = init_diagram()
-        self.wire_placement = self.place_wires()  # (Wire, row/col, direction)
-        self.is_dangerous = classify_diagram(self.wire_placement)
+        self.is_dangerous = False
 
     def place_wires(self) -> List[Tuple[WireDiagramCell, int]]:
         """
-        Places the wires on the diagram and returns the order in which the wires were placed
+        Places the wires on the diagram and returns if the diagram is classified as dangerous
         """
 
         direction = 1 if random.random() > 0.5 else 0
@@ -40,7 +39,46 @@ class WireDiagram:
 
             direction = 1 - direction
 
-        return placement
+        return classify_diagram(placement)
+
+    def place_wires_dangerously(self) -> Tuple[List[Tuple[WireDiagramCell, int, int]], WireDiagramCell]:
+        """
+        Places the wires on the diagram in a dangerous configuration and returns which wire to cut
+        """
+
+        # Ensure Red is placed before Yellow
+        wire_order = [WireDiagramCell.RED, WireDiagramCell.YELLOW,
+                      WireDiagramCell.BLUE, WireDiagramCell.GREEN]
+        random.shuffle(wire_order)
+        red_index = wire_order.index(WireDiagramCell.RED)
+        yellow_index = wire_order.index(WireDiagramCell.YELLOW)
+
+        # If Yellow comes before Red, swap them
+        if yellow_index < red_index:
+            wire_order[red_index], wire_order[yellow_index] = wire_order[yellow_index], wire_order[red_index]
+
+        direction = 1 if random.random() > 0.5 else 0
+        remaining_cols, remaining_rows = list(range(20)), list(range(20))
+        placement: List[Tuple] = []  # (Wire, row/col, direction)
+
+        for wire in wire_order:
+            if direction:
+                row = random.choice(remaining_rows)
+                remaining_rows.remove(row)
+                place_row(self.diagram, row, wire)
+                placement.append((wire, row, direction))
+            else:
+                col = random.choice(remaining_cols)
+                remaining_cols.remove(col)
+                place_col(self.diagram, col, wire)
+                placement.append((wire, col, direction))
+
+            direction = 1 - direction
+
+        # The wire to cut is the third one placed
+        wire_to_cut = placement[2][0]
+
+        return wire_to_cut
 
     def flatten_diagram(self) -> np.ndarray:
         """Flattens the wires into binary values"""
