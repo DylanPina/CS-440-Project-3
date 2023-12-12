@@ -5,12 +5,13 @@ from logistic_regression import LogisticRegression
 NON_LINEAR_INPUT_LAYER_SIZE = 2360
 LINEAR_INPUT_LAYER_SIZE = 1600
 
-TRAINING_DATA_SIZE = 5000
+TRAINING_DATA_SIZE = 10000
 VALIDATION_DATA_SIZE = 0
 TESTING_DATA_SIZE = 1000
-LEARNING_RATE = 0.01
-EPOCHS = 100
-LAMBDA_TERM = 0.01
+LEARNING_RATE = 0.25
+EPOCHS = 1000
+LAMBDA_TERM = 0.1
+PATIENCE = 50
 
 if __name__ == '__main__':
     init_logging()
@@ -24,7 +25,8 @@ if __name__ == '__main__':
         testing_data=testing_data,
         learning_rate=LEARNING_RATE,
         epochs=EPOCHS,
-        lambda_term=LAMBDA_TERM)
+        lambda_term=LAMBDA_TERM,
+        patience=PATIENCE)
 
     t1_linear.stochastic_gradient_descent()
     t1_linear.plot_loss(linear=True)
@@ -39,7 +41,8 @@ if __name__ == '__main__':
         testing_data=testing_data,
         learning_rate=LEARNING_RATE,
         epochs=EPOCHS,
-        lambda_term=LAMBDA_TERM)
+        lambda_term=LAMBDA_TERM,
+        patience=PATIENCE)
 
     t1_non_linear.stochastic_gradient_descent()
     t1_non_linear.plot_loss(linear=False)
