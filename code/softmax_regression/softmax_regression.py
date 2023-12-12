@@ -6,7 +6,7 @@ import utils
 from typing import List, Tuple
 
 
-class LogisticRegression():
+class SoftmaxRegression():
 
     def __init__(
         self,
@@ -25,7 +25,8 @@ class LogisticRegression():
         self.lambda_term = lambda_term
         self.patience = patience
         self.testing_data = testing_data
-        self.weights = [np.random.randn() for _ in range(input_layer_size)]
+        self.weights = np.random.uniform(-0.25,
+                                         0.25, (4, self.input_layer_size))
         self.training_loss = []
         self.testing_loss = []
         self.training_success = []
@@ -39,7 +40,7 @@ class LogisticRegression():
 
         activation = activation.reshape(-1, 1)
         z = np.dot(self.weights, activation)
-        activation = self.sigmoid(z)
+        activation = self.softmax(z)
         return activation
 
     def stochastic_gradient_descent(self) -> None:
@@ -65,52 +66,38 @@ class LogisticRegression():
         """Compute the gradient of the loss function."""
 
         return np.dot((activation - expected_output),
-                      input_data.reshape(-1, 1).transpose())
+                      input_data.reshape(-1, 1).transpose()) / input_data.shape[0]
 
-    def gradient_descent_l2_regularization(self, activation: float, input_data: np.ndarray, expected_output: int) -> np.ndarray:
-        """Compute the gradient of the loss function with L2 regularization."""
-
-        gradient = np.dot((activation - expected_output),
-                          input_data.reshape(-1, 1).transpose())
-        l2_gradient = np.dot(self.lambda_term, self.weights)
-        return gradient + l2_gradient
-
-    def binary_cross_entropy_loss(self, data: List[Tuple[np.ndarray]]) -> float:
-        """Calculate the binary cross entropy loss."""
+    def cross_entropy_loss(self, data: List[Tuple[np.ndarray]]) -> float:
+        """Calculate cross entropy loss."""
 
         total_loss = 0
         for x, y in data:
-            # To avoid log(0) which is undefined, small values are added/subtracted from p
-            print(x)
-            x = max(min(self.feedforward(x), 1 - 1e-15), 1e-15)
-            total_loss += y * math.log(x) + (1 - y) * math.log(1 - x)
+            x = np.clip(self.feedforward(x), 1e-15, 1 - 1e-15)  
+            total_loss += -np.sum(y * np.log(x))
 
-        return -total_loss / len(data)
-
-    def l2_regularization(self) -> float:
-        """Calculate the l2 regularization."""
-
-        return self.lambda_term * np.sum(np.square(self.weights))
+        return total_loss / len(data)
 
     def evaluate(self, data: List[Tuple[np.ndarray]]) -> int:
         """Return the number of test inputs for which the model network outputs the correct result."""
 
-        test_results = [(utils.evaluate_activation(self.feedforward(x)), y)
+        test_results = [(np.argmax((self.feedforward(x))), np.argmax(y))
                         for (x, y) in data]
 
         return sum(x == y for (x, y) in test_results)
 
-    def sigmoid(self, z: np.ndarray) -> float:
-        """Sigmoid activation function."""
+    def softmax(self, z):
+        """Softmax activation function."""
 
-        return 1 / (1 + np.exp(-z))
+        exp_z = np.exp(z - np.max(z))
+        return exp_z / exp_z.sum(axis=0, keepdims=True)
 
     def calculate_loss(self) -> None:
         """Calculates the loss for training and testing data based on the current model"""
 
-        training_loss = self.binary_cross_entropy_loss(
+        training_loss = self.cross_entropy_loss(
             self.training_data)
-        testing_loss = self.binary_cross_entropy_loss(
+        testing_loss = self.cross_entropy_loss(
             self.testing_data)
 
         self.terminate_early(testing_loss)

@@ -47,21 +47,24 @@ class WireDiagramDataLoader():
 
         for _ in range(self.training_data_count):
             wireDiagram = WireDiagram()
-            wire_to_cut = wireDiagram.place_wires_dangerously()
+            wire_to_cut = np.array(
+                wireDiagram.place_wires_dangerously().value).reshape(-1, 1)
             x, y = wireDiagram.flatten_diagram_non_linear(
             ) if non_linear_features else wireDiagram.flatten_diagram(), wire_to_cut
             training_data.append((x, y))
 
         for _ in range(self.validation_data_count):
             wireDiagram = WireDiagram()
-            wire_to_cut = wireDiagram.place_wires_dangerously()
+            wire_to_cut = np.array(
+                wireDiagram.place_wires_dangerously().value).reshape(-1, 1)
             x, y = wireDiagram.flatten_diagram_non_linear(
-            ) if non_linear_features else wireDiagram.flatten_diagram(), wire_to_cut
+            ) if non_linear_features else wireDiagram.flatten_diagram(), wire_to_cut.reshape(-1, 1)
             validation_data.append((x, y))
 
         for _ in range(self.test_data_count):
             wireDiagram = WireDiagram()
-            wire_to_cut = wireDiagram.place_wires_dangerously()
+            wire_to_cut = np.array(
+                wireDiagram.place_wires_dangerously().value).reshape(-1, 1)
             x, y = wireDiagram.flatten_diagram_non_linear(
             ) if non_linear_features else wireDiagram.flatten_diagram(), wire_to_cut
             test_data.append((x, y))
