@@ -81,7 +81,6 @@ class LogisticRegression():
         total_loss = 0
         for x, y in data:
             # To avoid log(0) which is undefined, small values are added/subtracted from p
-            print(x)
             x = max(min(self.feedforward(x), 1 - 1e-15), 1e-15)
             total_loss += y * math.log(x) + (1 - y) * math.log(1 - x)
 

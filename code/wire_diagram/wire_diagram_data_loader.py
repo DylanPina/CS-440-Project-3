@@ -21,21 +21,21 @@ class WireDiagramDataLoader():
             wireDiagram = WireDiagram()
             is_dangerous = wireDiagram.place_wires()
             x, y = wireDiagram.flatten_diagram_non_linear(
-            ) if non_linear_features else wireDiagram.flatten_diagram(), is_dangerous
+                t1=True) if non_linear_features else wireDiagram.flatten_diagram(), is_dangerous
             training_data.append((x, y))
 
         for _ in range(self.validation_data_count):
             wireDiagram = WireDiagram()
             is_dangerous = wireDiagram.place_wires()
             x, y = wireDiagram.flatten_diagram_non_linear(
-            ) if non_linear_features else wireDiagram.flatten_diagram(), is_dangerous
+                t1=True) if non_linear_features else wireDiagram.flatten_diagram(), is_dangerous
             validation_data.append((x, y))
 
         for _ in range(self.test_data_count):
             wireDiagram = WireDiagram()
             is_dangerous = wireDiagram.place_wires()
             x, y = wireDiagram.flatten_diagram_non_linear(
-            ) if non_linear_features else wireDiagram.flatten_diagram(), is_dangerous
+                t1=True) if non_linear_features else wireDiagram.flatten_diagram(), is_dangerous
             test_data.append((x, y))
 
         return (training_data, validation_data, test_data)
@@ -50,7 +50,7 @@ class WireDiagramDataLoader():
             wire_to_cut = np.array(
                 wireDiagram.place_wires_dangerously().value).reshape(-1, 1)
             x, y = wireDiagram.flatten_diagram_non_linear(
-            ) if non_linear_features else wireDiagram.flatten_diagram(), wire_to_cut
+                t2=True) if non_linear_features else wireDiagram.flatten_diagram(), wire_to_cut
             training_data.append((x, y))
 
         for _ in range(self.validation_data_count):
@@ -58,7 +58,7 @@ class WireDiagramDataLoader():
             wire_to_cut = np.array(
                 wireDiagram.place_wires_dangerously().value).reshape(-1, 1)
             x, y = wireDiagram.flatten_diagram_non_linear(
-            ) if non_linear_features else wireDiagram.flatten_diagram(), wire_to_cut.reshape(-1, 1)
+                t2=True) if non_linear_features else wireDiagram.flatten_diagram(), wire_to_cut.reshape(-1, 1)
             validation_data.append((x, y))
 
         for _ in range(self.test_data_count):
@@ -66,7 +66,7 @@ class WireDiagramDataLoader():
             wire_to_cut = np.array(
                 wireDiagram.place_wires_dangerously().value).reshape(-1, 1)
             x, y = wireDiagram.flatten_diagram_non_linear(
-            ) if non_linear_features else wireDiagram.flatten_diagram(), wire_to_cut
+                t2=True) if non_linear_features else wireDiagram.flatten_diagram(), wire_to_cut
             test_data.append((x, y))
 
         return (training_data, validation_data, test_data)

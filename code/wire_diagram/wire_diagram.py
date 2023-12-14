@@ -85,51 +85,70 @@ class WireDiagram:
 
         return np.array([cell.value for row in self.diagram for cell in row]).flatten()
 
-    def generate_non_linear_features(self, diagram: np.ndarray) -> np.ndarray:
+    def generate_non_linear_features(self, diagram: np.ndarray, t1: bool = False, t2: bool = False) -> np.ndarray:
+        """Returns non-linear features for the specified task."""
+
+        if t1:
+            return self.generate_non_linear_features_t1(diagram, (2, 2), t1, t2)
+        elif t2:
+            return self.generate_non_linear_features_t2(diagram, (2, 2), t1, t2)
+
+        return np.array([None])
+
+    def generate_non_linear_features_t1(self, diagram: np.ndarray, region_size: Tuple[int] = (2, 2), t1: bool = False, t2: bool = False) -> np.ndarray:
         """
-        Generates non-linear features based on horizontal and vertical adjacent cells.
+        Generate convolutional-like features from a flattened wiring diagram.
 
-        In each row of 20 cells, there are 19 interactions (between the first and second
-        cell, second and third, and so onup to the 19th and 20th). Since there are 20 rows,
-        the total number of horizontal interactions is 19 * 20 = 380.
-
-        Similarly, in each column of 20 cells, there are also 19 interactions (between the
-        first and second cell, second and third, etc., down the column). With 20 columns,
-        the total number of vertical interactions is also 19 * 20 = 380.
-
-        Adding horizontal and vertical interactions produce a total of 760 new features.
+        It extracts local features from a 20x20 pixel wiring diagram, which is represented 
+        as a flattened one-hot encoded vector of length 1600. The function reshapes this vector
+        into a 20x20x4 grid (for the one-hot encoded color channels) and extracts features from 
+        local regions of specified size by summing the occurrences of each color.
         """
+
+        diagram_matrix = diagram.reshape(20, 20, 4)
 
         features = []
-        num_rows = num_columns = 20  # 20 x 20 grid
+        for i in range(0, 20 - region_size[0] + 1):
+            for j in range(0, 20 - region_size[1] + 1):
+                region = diagram_matrix[i:i +
+                                        region_size[0], j:j+region_size[1], :]
+                region_features = np.sum(region, axis=(0, 1))
+                features.append(region_features)
 
-        # Horizontal Interactions (Adjacent cells in a row)
-        for row in range(num_rows):
-            # Loop to second-to-last cell to avoid index out of bounds
-            for i in range(num_rows - 1):
-                index1 = row * num_rows + i
-                index2 = index1 + 1  # Adjacent cell
-                interaction = diagram[index1] * diagram[index2]
-                features.append(interaction)
+        return np.array(features).flatten()
 
-        # Vertical Interactions (Adjacent cells in a column)
-        for col in range(num_columns):
-            # Loop to second-to-last cell to avoid index out of bounds
-            for i in range(num_rows - 1):
-                index1 = col + i * num_columns
-                # Cell in the next row (directly below)
-                index2 = index1 + num_columns
-                interaction = diagram[index1] * diagram[index2]
-                features.append(interaction)
+    def generate_non_linear_features_t2(self, diagram: np.ndarray, region_size: Tuple[int] = (2, 2), t1: bool = False, t2: bool = False) -> np.ndarray:
+        """
+        Generate features based on the intersections and sequence of wire colors in each region.
+        
+        It analyzes each region to check for the presence of each color. It marks intersections 
+        of each color within the region. The feature vector indicates which colors are intersecting 
+        in each local region.
+        """
 
-        return np.array(features)
+        diagram_matrix = diagram.reshape(20, 20, 4)
 
-    def flatten_diagram_non_linear(self) -> np.ndarray:
+        features = []
+        for i in range(0, 20 - region_size[0] + 1, 1):
+            for j in range(0, 20 - region_size[1] + 1, 1):
+                region = diagram_matrix[i:i +
+                                        region_size[0], j:j+region_size[1], :]
+                intersection_features = np.zeros(4)
+                # Analyze the layering of colors
+                for color_index in range(4):
+                    if np.any(region[:, :, color_index]):
+                        # Mark if this color intersects in the region
+                        intersection_features[color_index] = 1
+                features.append(intersection_features)
+
+        return np.array(features).flatten()
+
+    def flatten_diagram_non_linear(self, t1: bool = False, t2: bool = False) -> np.ndarray:
         """Flattens the wires into binary values with non linear featrues"""
 
         flattened_diagram = self.flatten_diagram()
         non_linear_features = self.generate_non_linear_features(
-            flattened_diagram)
+            flattened_diagram, t1, t2)
         flattened_diagram_non_linear = np.concatenate(
             (flattened_diagram, non_linear_features))
 
