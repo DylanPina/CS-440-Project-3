@@ -14,7 +14,7 @@ TESTING_DATA_SIZE = 10000
 LEARNING_RATE = 0.01
 EPOCHS = 1000
 LAMBDA_TERM = 0.1
-PATIENCE = 150
+PATIENCE = 250
 
 if __name__ == '__main__':
     init_logging()
@@ -64,5 +64,5 @@ if __name__ == '__main__':
         patience=PATIENCE)
 
     t2_linear.stochastic_gradient_descent()
-    t2_linear.plot_loss(linear=False)
-    t2_linear.plot_success(linear=False)
+    t2_linear.plot_loss(linear=True)
+    t2_linear.plot_success(linear=True)

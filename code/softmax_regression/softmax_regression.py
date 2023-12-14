@@ -66,7 +66,7 @@ class SoftmaxRegression():
         """Compute the gradient of the loss function."""
 
         return np.dot((activation - expected_output),
-                      input_data.reshape(-1, 1).transpose()) / input_data.shape[0]
+                      input_data.reshape(-1, 1).transpose())
 
     def cross_entropy_loss(self, data: List[Tuple[np.ndarray]]) -> float:
         """Calculate cross entropy loss."""
