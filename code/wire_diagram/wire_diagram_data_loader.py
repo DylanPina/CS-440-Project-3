@@ -7,7 +7,7 @@ from typing import List, Tuple
 class WireDiagramDataLoader():
     """Loads data for network to train, validate, and test on"""
 
-    def __init__(self, training_data_count: int, validation_data_count: int, test_data_count: int):
+    def __init__(self, training_data_count: int, validation_data_count: int = 0, test_data_count: int = 0):
         self.training_data_count = training_data_count
         self.validation_data_count = validation_data_count
         self.test_data_count = test_data_count
