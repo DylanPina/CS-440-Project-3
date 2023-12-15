@@ -106,18 +106,6 @@ def train_softmax(model: any, learning_rate: float, criterion: any, optimizer: a
 
         testing_loss.append(total_test_loss / len(testing_dataloader))
 
-    plot_loss(training_loss=training_loss, testing_loss=testing_loss,
-              data_size=len(training_dataloader), epochs=n_epochs, learning_rate=learning_rate)
-
-
-def plot_loss(training_loss: List[float], testing_loss: List[float], data_size: int, epochs: int, learning_rate: int) -> None:
-    """Plots the success rate of the training and testing data sets"""
-
-    utils.plot(f"ec_training_loss_d-{data_size}_e-{epochs}_a-{learning_rate}", f"Training Loss - Data size: {data_size} - Epochs: {epochs} - Alpha: {learning_rate}", "Epochs", "loss Rate",
-               training_loss)
-    utils.plot(f"ec_testing_loss__d-{data_size}_e-{epochs}_a-{learning_rate}", f"Testing Loss - Data size: {data_size} - Epochs: {epochs} - Alpha: {learning_rate}",
-               "Epochs", "loss Rate", testing_loss)
-
 
 init_logging()
 
@@ -160,11 +148,11 @@ model = LogisticRegression()
 learning_rate = 0.01
 criterion = nn.BCELoss()
 optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
-n_epochs = 100
+n_epochs = 10
 
 training_dataset = T1WireDiagramDataset(2000)
 training_dataloader = DataLoader(
-    dataset=training_dataset, batch_size=10, shuffle=True)
+    dataset=training_dataset, batch_size=1, shuffle=True)
 testing_dataset = T1WireDiagramDataset(2000)
 testing_dataloader = DataLoader(
     dataset=testing_dataset, batch_size=10, shuffle=True)
@@ -173,17 +161,17 @@ train_logistic(model=model, learning_rate=learning_rate, criterion=criterion, op
 
 
 # Task 2
-# model = SoftmaxRegression()
-# learning_rate = 0.01
-# criterion = nn.CrossEntropyLoss()
-# optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
-# n_epochs = 100
+model = SoftmaxRegression()
+learning_rate = 0.01
+criterion = nn.CrossEntropyLoss()
+optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
+n_epochs = 100
 
-# training_dataset = T2WireDiagramDataset(2000)
-# training_dataloader = DataLoader(
-#     dataset=training_dataset, batch_size=10, shuffle=True)
-# testing_dataset = T2WireDiagramDataset(2000)
-# testing_dataloader = DataLoader(
-#     dataset=testing_dataset, batch_size=10, shuffle=True)
-# train_softmax(model=model, learning_rate=learning_rate, criterion=criterion, optimizer=optimizer,
-#       n_epochs=n_epochs, training_dataloader=training_dataloader, testing_dataloader=testing_dataloader)
+training_dataset = T2WireDiagramDataset(2000)
+training_dataloader = DataLoader(
+    dataset=training_dataset, batch_size=1, shuffle=True)
+testing_dataset = T2WireDiagramDataset(2000)
+testing_dataloader = DataLoader(
+    dataset=testing_dataset, batch_size=1, shuffle=True)
+train_softmax(model=model, learning_rate=learning_rate, criterion=criterion, optimizer=optimizer,
+              n_epochs=n_epochs, training_dataloader=training_dataloader, testing_dataloader=testing_dataloader)
